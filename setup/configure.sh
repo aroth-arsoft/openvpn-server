@@ -42,18 +42,18 @@ if [ ! -c /dev/net/tun ]; then
     mknod /dev/net/tun c 10 200
 fi
 
-cp -f /etc/openvpn/setup/openvpn.conf /etc/openvpn/openvpn.conf
+cp -f /etc/openvpn/setup/openvpn.conf /tmp/openvpn.conf
 
 if [ ${OVPN_PASSWD_AUTH} = "true" ]; then
-  echo "setenv LDAP_URI ${LDAP_URI}" | tee -a /etc/openvpn/openvpn.conf
-  echo "setenv LDAP_DOMAIN ${LDAP_DOMAIN}" | tee -a /etc/openvpn/openvpn.conf
+  echo "setenv LDAP_URI ${LDAP_URI}" | tee -a /tmp/openvpn.conf
+  echo "setenv LDAP_DOMAIN ${LDAP_DOMAIN}" | tee -a /tmp/openvpn.conf
 
   mkdir -p /etc/openvpn/scripts/
-  cp -f /etc/openvpn/setup/auth.sh /etc/openvpn/scripts/auth.sh
+  cp -f /app/auth.sh /etc/openvpn/scripts/auth.sh
   chmod +x /etc/openvpn/scripts/auth.sh
-  echo "auth-user-pass-verify /etc/openvpn/scripts/auth.sh via-file" | tee -a /etc/openvpn/openvpn.conf
-  echo "script-security 2" | tee -a /etc/openvpn/openvpn.conf
-  echo "verify-client-cert require" | tee -a /etc/openvpn/openvpn.conf
+  echo "auth-user-pass-verify /etc/openvpn/scripts/auth.sh via-file" | tee -a /tmp/openvpn.conf
+  echo "script-security 2" | tee -a /tmp/openvpn.conf
+  echo "verify-client-cert require" | tee -a /tmp/openvpn.conf
   openvpn-user db-init --db.path=$EASY_RSA_LOC/pki/users.db
 fi
 
@@ -64,7 +64,7 @@ if [ ! -d /etc/openvpn/ccd ]; then
   mkdir -p /etc/openvpn/ccd
 fi
 
-exec openvpn --config /etc/openvpn/openvpn.conf \
+exec openvpn --config /tmp/openvpn.conf \
     --client-config-dir /etc/openvpn/ccd \
     --port ${OVPN_SRV_PORT} \
     --proto ${OVPN_SRV_PROTO} \
