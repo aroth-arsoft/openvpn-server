@@ -11,6 +11,9 @@ OVPN_SRV_NET=${OVPN_SERVER_NET:-172.16.100.0}
 OVPN_SRV_MASK=${OVPN_SERVER_MASK:-255.255.255.0}
 OVPN_PASSWD_AUTH=${OVPN_PASSWD_AUTH:-false}
 
+OVPN_MGMT_HOST=${OVPN_MANAGEMENT_HOST:-0.0.0.0}
+OVPN_MGMT_PORT=${OVPN_MANAGEMENT_PORT:-8989}
+
 cd $EASY_RSA_LOC
 
 if [ -e "$SERVER_CERT" ]; then
@@ -68,6 +71,6 @@ exec openvpn --config /tmp/openvpn.conf \
     --client-config-dir /etc/openvpn/ccd \
     --port ${OVPN_SRV_PORT} \
     --proto ${OVPN_SRV_PROTO} \
-    --management 127.0.0.1 8989 \
+    --management ${OVPN_MGMT_HOST} ${OVPN_MGMT_PORT} \
     --dev ${OVPN_SRV_DEV} \
     --server ${OVPN_SRV_NET} ${OVPN_SRV_MASK}
